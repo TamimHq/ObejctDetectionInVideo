@@ -79,18 +79,18 @@ Example:
 📦 object-detection-in-video
 │
 ├── Models/
-│   └── best.pt       # Trained YOLO11 weights
+│   └── best.pt
 │
 ├── NoteBook/
 │   └── object_detection_in_video.ipynb
 │
 ├── outputs/
-│   ├── web_ready_output.mp4    # Annotated output video
-│   └── total_counts.csv        # Final aggregated counts
+│   ├── web_ready_output.mp4
+│   └── total_counts.csv
 │
 ├── Results/
-│   ├── Training_result.png    # Training metrics 
-│   └── Confusion_matrix.png   # Evaluation matrix
+│   ├── Training_result.png
+│   └── Confusion_matrix.png
 │
 └── README.md
 
