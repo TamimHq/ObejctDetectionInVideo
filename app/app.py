@@ -26,7 +26,6 @@ uploaded_video = st.file_uploader("Upload Video File", type=['mp4', 'mov', 'avi'
 if uploaded_video is not None:
     
     # --- EXTRACT FIRST FRAME FOR PREVIEW (Optimized with Session State) ---
-    # We only read the first frame once to keep the sliders fast and prevent file lock crashes
     if "video_name" not in st.session_state or st.session_state.video_name != uploaded_video.name:
         with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tfile:
             tfile.write(uploaded_video.read())
@@ -46,10 +45,10 @@ if uploaded_video is not None:
         os.remove(tmp_path) # Clean up preview temp file immediately
         st.session_state.video_name = uploaded_video.name
         
-        # Reset the uploader read position so it can be read again during processing
+        
         uploaded_video.seek(0)
 
-    # --- DYNAMIC ZONE SETTINGS ---
+
     st.write("### 🎛️ Adjust Counting Zone")
     col1, col2 = st.columns(2)
     with col1:
