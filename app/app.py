@@ -98,6 +98,8 @@ if uploaded_video is not None:
             class_counts = {}
             class_names = model.names
 
+            track_states = {}
+
             # 4. Processing Loop
             progress_bar = st.progress(0)
             status_text = st.empty() # Create a space for text updates
@@ -135,13 +137,22 @@ if uploaded_video is not None:
                         class_name = class_names[class_id]
                         x1, y1, x2, y2 = box
                         cx, cy = int((x1 + x2) / 2), int((y1 + y2) / 2)
-
-                        # Use dynamic zone coordinates from the sliders
-                        if zone_x1 < cx < zone_x2 and zone_y1 < cy < zone_y2:
-                            if track_id not in counted_ids:
-                                counted_ids.add(track_id)
-                                class_counts[class_name] = class_counts.get(class_name, 0) + 1
-
+                    
+                        # current position inside zone?
+                        is_inside = (zone_x1 < cx < zone_x2) and (zone_y1 < cy < zone_y2)
+                    
+                        # previous state of this tracked object
+                        prev_inside = track_states.get(track_id, False)
+                    
+                        # count only when object moves from outside -> inside
+                        if (not prev_inside) and is_inside and (track_id not in counted_ids):
+                            counted_ids.add(track_id)
+                            class_counts[class_name] = class_counts.get(class_name, 0) + 1
+                    
+                        # update latest state
+                        track_states[track_id] = is_inside
+                    
+                        # draw center point
                         cv2.circle(annotated_frame, (cx, cy), 5, (0, 0, 255), -1)
 
                 cv2.rectangle(annotated_frame, (zone_x1, zone_y1), (zone_x2, zone_y2), (0, 255, 255), 2)
