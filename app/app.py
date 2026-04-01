@@ -140,17 +140,17 @@ if uploaded_video is not None:
                     
                         # current position inside zone?
                         is_inside = (zone_x1 < cx < zone_x2) and (zone_y1 < cy < zone_y2)
-                    
-                        # previous state of this tracked object
-                        prev_inside = track_states.get(track_id, False)
-                    
-                        # count only when object moves from outside -> inside
-                        if (not prev_inside) and is_inside and (track_id not in counted_ids):
-                            counted_ids.add(track_id)
-                            class_counts[class_name] = class_counts.get(class_name, 0) + 1
-                    
-                        # update latest state
-                        track_states[track_id] = is_inside
+
+                        if track_id not in track_states:
+                            track_states[track_id] = is_inside
+                        else:
+                            prev_inside = track_states[track_id]
+                        
+                            if (not prev_inside) and is_inside and (track_id not in counted_ids):
+                                counted_ids.add(track_id)
+                                class_counts[class_name] = class_counts.get(class_name, 0) + 1
+                        
+                            track_states[track_id] = is_inside
                     
                         # draw center point
                         cv2.circle(annotated_frame, (cx, cy), 5, (0, 0, 255), -1)
