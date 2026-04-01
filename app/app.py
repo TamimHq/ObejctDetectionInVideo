@@ -100,6 +100,8 @@ if uploaded_video is not None:
 
             # 4. Processing Loop
             progress_bar = st.progress(0)
+            status_text = st.empty() # Create a space for text updates
+            
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             frame_count = 0
 
@@ -109,9 +111,18 @@ if uploaded_video is not None:
                     break
 
                 frame_count += 1
-                if frame_count % 10 == 0: 
-                    progress_bar.progress(min(frame_count / total_frames, 1.0))
+                
+                # Update text every single frame so you know it's not frozen
+                if total_frames > 0:
+                    status_text.text(f"⚙️ Processing frame {frame_count} of {total_frames}...")
+                    # Update progress bar every 5 frames to save UI resources
+                    if frame_count % 5 == 0: 
+                        progress_bar.progress(min(frame_count / total_frames, 1.0))
+                else:
+                    # Fallback if OpenCV fails to read total frames
+                    status_text.text(f"⚙️ Processing frame {frame_count}... (Total frames unknown)")
 
+                # --- YOLO TRACKING ---
                 results = model.track(frame, persist=True, conf=0.35, tracker="bytetrack.yaml", verbose=False)
                 annotated_frame = results[0].plot()
 
