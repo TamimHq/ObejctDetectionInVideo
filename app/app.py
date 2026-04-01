@@ -36,7 +36,7 @@ if uploaded_video is not None:
         success, frame = cap.read()
         st.session_state.width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         st.session_state.height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        st.session_state.fps = int(cap.get(cv2.CAP_PROP_FPS))
+        st.session_state.fps = int(cap.get(cv2.CAP_PROP_FPS)) or 25
         
         if success:
             # Convert BGR to RGB for Streamlit image display
@@ -104,7 +104,7 @@ if uploaded_video is not None:
             progress_bar = st.progress(0)
             status_text = st.empty() # Create a space for text updates
             
-            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
             frame_count = 0
 
             while cap.isOpened():
